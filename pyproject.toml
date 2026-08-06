@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codeagent"
+version = "0.1.0"
+description = "A small, dependency-light autonomous coding agent: observe -> think -> act loop over a jailed workspace, with pluggable LLM backends and a fully deterministic mock backend for testing."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "yusrafaheem" }]
+keywords = ["agent", "llm", "autonomous-agent", "coding-agent", "react-loop"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries",
+]
+
+# Real LLM backends are optional -- the agent runs and is fully testable
+# against the built-in MockLLM with zero extra dependencies. Install these
+# extras only if you want to actually drive it with a real model.
+[project.optional-dependencies]
+openai = ["openai>=1.0"]
+anthropic = ["anthropic>=0.30"]
+dev = ["ruff>=0.4"]
+
+[project.scripts]
+codeagent = "codeagent.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["codeagent*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
