@@ -183,6 +183,13 @@ def run_shell(workspace: Workspace, safety: SafetyPolicy, command: str) -> ToolR
 def search(
     workspace: Workspace, safety: SafetyPolicy, pattern: str, path: str = "."
 ) -> ToolResult:
+    """Regex-search (Python ``re`` syntax) for ``pattern`` across every
+    readable text file under ``path`` (a single file is fine too),
+    returning ``relative/path:lineno: line`` per match -- close to
+    ``grep -rn`` output, which is the format an agent is most likely to
+    have seen in training. Files that fail to decode as UTF-8 are skipped
+    rather than erroring the whole search.
+    """
     try:
         target = workspace.resolve(path)
     except PathEscapesWorkspaceError as e:
