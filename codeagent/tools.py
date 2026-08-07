@@ -125,6 +125,11 @@ def edit_file(
 
 
 def list_dir(workspace: Workspace, safety: SafetyPolicy, path: str = ".") -> ToolResult:
+    """List the immediate (non-recursive) contents of ``path``, one entry
+    per line prefixed with ``d`` or ``f``. Directories sort before files at
+    each name so an agent scanning the output can spot subdirectories
+    worth exploring at a glance.
+    """
     try:
         target = workspace.resolve(path)
     except PathEscapesWorkspaceError as e:
