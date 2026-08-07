@@ -107,6 +107,10 @@ class AnthropicClient:
         self.model = model
 
     def complete(self, messages: list[dict[str, str]]) -> str:
+        """Translate the flat OpenAI-style ``messages`` list into
+        Anthropic's shape (system prompt pulled out separately, remaining
+        turns passed as-is) and concatenate every text block of the
+        response into a single string."""
         # The Anthropic API takes the system prompt separately from the
         # user/assistant turn list, unlike OpenAI's flat messages array.
         system_parts = [m["content"] for m in messages if m["role"] == "system"]
