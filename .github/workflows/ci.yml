@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run test suite
+        run: python -m unittest discover -s tests -v
+
+      - name: Smoke-test the CLI against the mock backend
+        run: |
+          pip install -e .
+          mkdir -p /tmp/ci_demo_ws
+          printf 'def add(a, b):\n    return a - b  # bug: should be addition\n\n\ndef multiply(a, b):\n    return a * b\n' > /tmp/ci_demo_ws/calc.py
+          codeagent run "find and fix the bug in calc.py" --workdir /tmp/ci_demo_ws --provider mock --script examples/demo_actions.json
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Ruff check
+        run: ruff check codeagent tests
