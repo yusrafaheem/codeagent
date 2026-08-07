@@ -78,6 +78,9 @@ class OpenAIClient:
         self.model = model
 
     def complete(self, messages: list[dict[str, str]]) -> str:
+        """Forward ``messages`` as-is (already OpenAI chat format) and
+        return the first choice's text, or "" if the model returned no
+        content at all (e.g. a tool-call-only response)."""
         response = self._client.chat.completions.create(
             model=self.model, messages=messages
         )
