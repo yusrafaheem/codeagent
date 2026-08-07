@@ -25,6 +25,14 @@ MUTATING_TOOLS = frozenset({"write_file", "edit_file", "run_shell"})
 
 @dataclass
 class Step:
+    """One turn of the agent loop, as actually recorded (not what the LLM
+    was asked for, but what it did and what happened as a result).
+
+    ``index`` doubles as this step's key into History's checkpoint dict --
+    it's set to ``len(self.steps)`` at record time, so it's stable and
+    matches the step's position in the transcript.
+    """
+
     index: int
     thought: str
     tool: str
