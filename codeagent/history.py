@@ -60,6 +60,12 @@ class History:
         self._checkpoints[step_index] = snapshot
 
     def record(self, thought: str, tool: str, args: dict, success: bool, observation: str) -> Step:
+        """Append a completed step to the log and return it.
+
+        Called once per loop iteration by Agent.run(), after the tool call
+        (or the attempt at one) has already happened -- this is a record
+        of what occurred, not a queued action.
+        """
         step = Step(
             index=len(self.steps),
             thought=thought,
