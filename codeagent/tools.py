@@ -44,6 +44,12 @@ def _err(message: str) -> ToolResult:
 
 
 def read_file(workspace: Workspace, safety: SafetyPolicy, path: str) -> ToolResult:
+    """Return the full UTF-8 text contents of ``path``.
+
+    Fails cleanly (rather than raising) on the three predictable ways this
+    can go wrong: the path escapes the workspace, the path doesn't exist,
+    or it exists but isn't valid UTF-8 text (e.g. a binary file).
+    """
     try:
         target = workspace.resolve(path)
     except PathEscapesWorkspaceError as e:
