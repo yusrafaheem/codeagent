@@ -69,6 +69,12 @@ def read_file(workspace: Workspace, safety: SafetyPolicy, path: str) -> ToolResu
 
 
 def write_file(workspace: Workspace, safety: SafetyPolicy, path: str, content: str) -> ToolResult:
+    """Create ``path`` (and any missing parent directories) or overwrite it
+    entirely with ``content``. Unlike edit_file, this has no notion of
+    "existing content" -- it's the right tool for a brand-new file, and the
+    wrong one for a small change to a file the agent hasn't fully re-read,
+    since it silently discards whatever was there before.
+    """
     try:
         target = workspace.resolve(path)
     except PathEscapesWorkspaceError as e:
