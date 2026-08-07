@@ -21,6 +21,13 @@ MAX_FILE_BYTES = 1_000_000  # refuse to write pathologically large files
 
 @dataclass
 class ToolResult:
+    """The uniform return type every tool function produces.
+
+    ``success`` is what the agent loop checks to decide how to log the
+    step; ``output`` is always a string (never structured data) because it
+    goes straight back into the next LLM prompt as an observation.
+    """
+
     success: bool
     output: str
 
@@ -29,6 +36,10 @@ class ToolResult:
 
 
 def _err(message: str) -> ToolResult:
+    """Shorthand for the ``ToolResult(success=False, ...)`` every tool
+    returns on a handled failure (bad path, missing file, etc.) -- as
+    opposed to an unhandled exception, which the agent loop catches
+    separately as a malformed tool call."""
     return ToolResult(success=False, output=message)
 
 
