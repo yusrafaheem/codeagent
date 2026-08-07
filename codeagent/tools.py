@@ -146,6 +146,15 @@ def list_dir(workspace: Workspace, safety: SafetyPolicy, path: str = ".") -> Too
 
 
 def run_shell(workspace: Workspace, safety: SafetyPolicy, command: str) -> ToolResult:
+    """Run ``command`` in a subprocess rooted at the workspace directory,
+    after ``safety.check()`` clears it against the allow/deny policy.
+
+    stdout and stderr are both captured and folded into a single output
+    string (stderr labeled separately) along with the exit code, so the
+    agent sees everything a human running the command in a terminal would.
+    A command that exceeds ``safety.timeout_seconds`` is treated as a
+    failure rather than left to hang the loop.
+    """
     try:
         safety.check(command)
     except CommandNotAllowedError as e:
